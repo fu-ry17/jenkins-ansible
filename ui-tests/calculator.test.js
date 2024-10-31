@@ -1,47 +1,25 @@
 const puppeteer = require('puppeteer');
-const app = require('../src/app');
 
-let server;
-let browser;
-let page;
+describe('Calculator UI Tests', () => {
+    let browser;
+    let page;
 
-beforeAll(async () => {
-    server = app.listen(3000);
-    browser = await puppeteer.launch({
-        headless: 'new',
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage'
-        ]
+    beforeAll(async () => {
+        browser = await puppeteer.launch();
+        page = await browser.newPage();
+        await page.goto('http://localhost:3000'); // Your calculator app URL
     });
-    page = await browser.newPage();
-});
 
-afterAll(async () => {
-    if (browser) {
+    afterAll(async () => {
         await browser.close();
-    }
-    if (server) {
-        server.close();
-    }
-});
+    });
 
-describe('Calculator UI', () => {
-    test('adds two numbers correctly', async () => {
-        await page.goto('http://localhost:3000');
-        
-        await page.type('#num1', '2');
+    test('should add two numbers correctly', async () => {
+        await page.type('#num1', '5');
         await page.type('#num2', '3');
-        await page.select('#operation', 'add');
-        
-        await page.click('button');
-        
-        await page.waitForFunction(
-            'document.getElementById("result").textContent.includes("5")'
-        );
+        await page.click('#add-button');
         
         const result = await page.$eval('#result', el => el.textContent);
-        expect(result).toBe('Result: 5');
-    }, 30000);
+        expect(result).toBe('8');
+    });
 }); 

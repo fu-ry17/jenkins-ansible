@@ -24,7 +24,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                    pnpm install
+                    pnpm install --frozen-lockfile
                 '''
             }
         }
