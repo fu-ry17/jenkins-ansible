@@ -29,15 +29,9 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests') {
+        stage('Run Tests') {
             steps {
                 sh 'pnpm run test'
-            }
-        }
-
-        stage('Run UI Tests') {
-            steps {
-                sh 'pnpm run test:ui'
             }
         }
     }
