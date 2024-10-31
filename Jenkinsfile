@@ -7,6 +7,7 @@ pipeline {
 
     environment {
         ANSIBLE_PLAYBOOK_PATH = "/etc/ansible/deploy-node-app.yml"
+        ANSIBLE_INVENTORY_PATH = "/etc/ansible/hosts"
         JENKINS_HOME = "/var/lib/jenkins"
     }
 
@@ -31,10 +32,9 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible-ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
                         ansible-playbook \
-                            -i /etc/ansible/inventory.ini \
+                            -i ${ANSIBLE_INVENTORY_PATH} \
                             ${ANSIBLE_PLAYBOOK_PATH} \
                             -e "project_root=${WORKSPACE}" \
-                            --private-key=${SSH_KEY} \
                             -vv
                     '''
                 }
