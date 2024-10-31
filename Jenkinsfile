@@ -5,6 +5,11 @@ pipeline {
         nodejs 'Node.js'
     }
 
+    environment {
+        ANSIBLE_PLAYBOOK_PATH = "/etc/ansible/deploy-node-app.yml"
+        JENKINS_HOME = "/var/lib/jenkins"
+    }
+
     stages {
         stage('Setup pnpm') {
             steps {
@@ -21,31 +26,20 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Run Ansible Playbook') {
             steps {
-                sh '''
-                    pnpm install --frozen-lockfile
-                '''
+                withCredentials([sshUserPrivateKey(credentialsId: 'ansible-ssh-key', keyFileVariable: 'SSH_KEY')]) {
+                    sh '''
+                        ansible-playbook \
+                            -i /etc/ansible/inventory.ini \
+                            ${ANSIBLE_PLAYBOOK_PATH} \
+                            -e "project_root=${WORKSPACE}" \
+                            --private-key=${SSH_KEY} \
+                            -vv
+                    '''
+                }
             }
         }
-
-        stage('Run Unit Tests') {
-            steps {
-                sh 'pnpm run test'
-            }
-        }
-
-        // Commented out UI tests stage for future use with Ansible
-        /*
-        stage('Run UI Tests') {
-            when {
-                expression { return false }  // Disabled for now
-            }
-            steps {
-                sh 'pnpm run test:ui'
-            }
-        }
-        */
     }
 
     post {
@@ -53,10 +47,10 @@ pipeline {
             cleanWs()
         }
         success {
-            echo 'All tests passed!'
+            echo 'Deployment successful!'
         }
         failure {
-            echo 'Tests failed! Check the logs for more information.'
+            echo 'Deployment failed! Check the logs for more information.'
         }
     }
 }
