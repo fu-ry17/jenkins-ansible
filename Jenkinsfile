@@ -29,11 +29,23 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Unit Tests') {
             steps {
                 sh 'pnpm run test'
             }
         }
+
+        // Commented out UI tests stage for future use with Ansible
+        /*
+        stage('Run UI Tests') {
+            when {
+                expression { return false }  // Disabled for now
+            }
+            steps {
+                sh 'pnpm run test:ui'
+            }
+        }
+        */
     }
 
     post {

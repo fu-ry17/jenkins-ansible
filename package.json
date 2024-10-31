@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node src/app.js",
-    "test": "jest tests/"
+    "test": "jest --testMatch='<rootDir>/tests/**/*.test.js'",
+    "test:ui": "jest --testMatch='<rootDir>/ui-tests/**/*.test.js'"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "jest": "29.7.0",
+    "puppeteer": "22.4.1",
     "supertest": "7.0.0"
   },
   "engines": {
@@ -28,5 +30,11 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "jest": {
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.js"
+    ],
+    "testEnvironment": "node"
+  }
 }
