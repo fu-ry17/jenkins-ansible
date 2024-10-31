@@ -1,32 +1,23 @@
 pipeline {
     agent any
-
+    
     tools {
         nodejs 'Node.js'
     }
-
+    
     environment {
         ANSIBLE_PLAYBOOK_PATH = "/etc/ansible/deploy-node-app.yml"
         ANSIBLE_INVENTORY_PATH = "/etc/ansible/hosts"
         JENKINS_HOME = "/var/lib/jenkins"
     }
-
+    
     stages {
-        stage('Setup pnpm') {
-            steps {
-                sh '''
-                    npm install -g pnpm
-                    pnpm --version
-                '''
-            }
-        }
-
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
+        
         stage('Run Ansible Playbook') {
             steps {
                 sh '''
@@ -39,7 +30,7 @@ pipeline {
             }
         }
     }
-
+    
     post {
         always {
             cleanWs()
