@@ -1,0 +1,19 @@
+{
+  "name": "calculator-app",
+  "version": "1.0.0",
+  "description": "Simple calculator application with tests",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "jest",
+    "test:ui": "jest --testPathPattern=ui-tests"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "puppeteer": "^10.2.0",
+    "supertest": "^6.1.3"
+  }
+} 

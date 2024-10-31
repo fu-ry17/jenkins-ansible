@@ -1,11 +1,39 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'Node.js 20.x'
+    }
+
     stages {
-        stage('Hello') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Hello World'
+                sh 'npm install'
             }
+        }
+
+        stage('Unit Tests') {
+            steps {
+                sh 'npm test tests/'
+            }
+        }
+
+        stage('UI Tests') {
+            steps {
+                sh 'npm run test:ui'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+    }
+
+    post {
+        always {
+            junit '**/junit.xml'
         }
     }
 }
