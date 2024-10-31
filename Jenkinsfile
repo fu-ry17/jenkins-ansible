@@ -6,6 +6,15 @@ pipeline {
     }
 
     stages {
+        stage('Setup pnpm') {
+            steps {
+                sh '''
+                    npm install -g pnpm
+                    pnpm --version
+                '''
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -14,19 +23,21 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                sh '''
+                    pnpm install
+                '''
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                sh 'npm run test'
+                sh 'pnpm run test'
             }
         }
 
         stage('Run UI Tests') {
             steps {
-                sh 'npm run test:ui'
+                sh 'pnpm run test:ui'
             }
         }
     }
