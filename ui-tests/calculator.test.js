@@ -7,13 +7,24 @@ let page;
 
 beforeAll(async () => {
     server = app.listen(3000);
-    browser = await puppeteer.launch({ headless: 'new' });
+    browser = await puppeteer.launch({
+        headless: 'new',
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage'
+        ]
+    });
     page = await browser.newPage();
 });
 
 afterAll(async () => {
-    await browser.close();
-    server.close();
+    if (browser) {
+        await browser.close();
+    }
+    if (server) {
+        server.close();
+    }
 });
 
 describe('Calculator UI', () => {
@@ -32,5 +43,5 @@ describe('Calculator UI', () => {
         
         const result = await page.$eval('#result', el => el.textContent);
         expect(result).toBe('Result: 5');
-    });
+    }, 30000);
 }); 

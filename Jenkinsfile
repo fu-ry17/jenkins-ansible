@@ -2,28 +2,34 @@ pipeline {
     agent any
 
     environment {
-        NVM_DIR = "${HOME}/.nvm"
         NODE_VERSION = '20'
+        NVM_DIR = "${HOME}/.nvm"
     }
 
     stages {
         stage('Setup Node.js') {
             steps {
                 sh '''
+                    # Install required packages
+                    sudo apt-get update
+                    sudo apt-get install -y curl build-essential chromium-browser chromium-chromedriver \
+                    libgbm-dev libatk-bridge2.0-0 libgtk-3-0 libnss3 libx11-xcb1 libxcb-dri3-0 \
+                    libxcomposite1 libxcursor1 libxdamage1 libxfixes3 libxi6 libxrandr2 libxss1 \
+                    libxtst6 fonts-liberation xvfb
+
                     # Install NVM if not present
                     if [ ! -d "$NVM_DIR" ]; then
                         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
                     fi
                     
-                    # Load NVM
+                    # Load NVM and install Node.js
                     . $NVM_DIR/nvm.sh
-                    
-                    # Install and use Node.js
                     nvm install ${NODE_VERSION}
                     nvm use ${NODE_VERSION}
                     
-                    # Verify Node.js version
+                    # Verify versions
                     node --version
+                    npm --version
                 '''
             }
         }
@@ -50,7 +56,7 @@ pipeline {
             steps {
                 sh '''
                     . $NVM_DIR/nvm.sh
-                    npm run test:ui
+                    xvfb-run --server-args="-screen 0 1280x960x24" npm run test:ui
                 '''
             }
         }
