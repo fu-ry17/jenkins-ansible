@@ -29,15 +29,13 @@ pipeline {
 
         stage('Run Ansible Playbook') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ansible-ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                    sh '''
-                        ansible-playbook \
-                            -i ${ANSIBLE_INVENTORY_PATH} \
-                            ${ANSIBLE_PLAYBOOK_PATH} \
-                            -e "project_root=${WORKSPACE}" \
-                            -vv
-                    '''
-                }
+                sh '''
+                    ansible-playbook \
+                        -i ${ANSIBLE_INVENTORY_PATH} \
+                        ${ANSIBLE_PLAYBOOK_PATH} \
+                        -e "project_root=${WORKSPACE}" \
+                        -vv
+                '''
             }
         }
     }
